@@ -1,0 +1,81 @@
+﻿@model IEnumerable<Practical_18.ViewModels.StudentViewModel>
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<p>
+    <a class="btn btn-primary mt-3 "  asp-action="Create">Add </a>
+</p>
+<table class="table table-bordered table-hover text-center" id="student">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Department)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Grades)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Department)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Grades)
+            </td>
+            <td>
+                    <a class="btn btn-warning mt-3 "  asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                   <button class="btn btn-danger mt-3 js-delete" data-id="@item.Id">Delete</button>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+
+    @section scripts
+    {
+        <script>
+
+        $("#student .js-delete").on("click", function () {
+
+
+            var button = $(this);
+            let id = $(this).attr("data-id")
+
+
+            if (confirm("Are you sure you want to delete this record")) {
+                $.ajax({
+                    url: '@Url.Action("Delete", "Student")',
+                    method: "POST",
+                    data: { id: id },
+                    success: function (result) {
+                        if (result) {
+                            button.parents("tr").remove();
+                        } else {
+                            alert("Something went wrong!!");
+                        }
+
+                    },
+                    error: function () {
+                        alert('An error occurred while deleting the record.');
+                    }
+                });
+            }
+
+        });
+        </script>
+    }
